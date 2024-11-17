@@ -4,13 +4,13 @@ import AddUser from "./addUser/AddUser";
 import { useUserStore } from "../../../library/userStore";
 import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../../library/firebase";
-import {useChatStore} from "../../../library/chatStore";
+import { useChatStore } from "../../../library/chatStore";
 
 const Listchat = () => {
   const [chats, setChats] = useState([]);
   const [addMode, setAddMode] = useState(false);
   const { currentUser } = useUserStore();
-  const {chatId, changeChat} = useChatStore();
+  const { chatId, changeChat } = useChatStore();
 
   useEffect(() => {
     if (!currentUser?.id) return;
@@ -38,33 +38,29 @@ const Listchat = () => {
   }, [currentUser.id]);
 
   const handleSelect = async (chat) => {
-    
-      const userChats = chats.map(item=>{
-        const{user,...rest} = item;
-
-        return rest;
-      })
-
-      const chatIndex = userChats.findIndex(item => item.chatId === chat.chatId)
-
-      userChats[chatIndex].isSeen = true
-
-      const userChatsRef = doc(db,"userchats",currentUser.id)
-
-      try{
-          await updateDoc(userChatsRef,{
-            chats:userChats,
-          })
-          changeChat(chat.chatId, chat.user);
-      }catch(err){
-        console.log(err)
+    const updatedChats = chats.map((item) => {
+      if (item.chatId === chat.chatId) {
+        return { ...item, isSeen: true };
       }
-    
-    
+      return item;
+    });
+
+    setChats(updatedChats);
+
+    const userChatsRef = doc(db, "userchats", currentUser.id);
+
+    try {
+      await updateDoc(userChatsRef, {
+        chats: updatedChats.map(({ user, ...rest }) => rest),
+      });
+      changeChat(chat.chatId, chat.user);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
-    <div className='listchat'>
+    <div className="listchat">
       <div className="search">
         <div className="searchBar">
           <img src="/search.png" alt="Search" />
@@ -79,12 +75,9 @@ const Listchat = () => {
       </div>
       {chats.map((chat) => (
         <div
-          className="item"
+          className={`item ${!chat.isSeen ? 'unseen' : ''}`}
           key={chat.chatId}
           onClick={() => handleSelect(chat)}
-          style={{
-            backgroundColor: chat?.isSeen ? "transparent" : "#5183fe",
-          }}
         >
           <img src={chat.user.avatar || "./avatar.png"} alt="Avatar" />
           <div className="texts">
@@ -99,4 +92,6 @@ const Listchat = () => {
 };
 
 export default Listchat
+
+
 

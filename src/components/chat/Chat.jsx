@@ -41,17 +41,17 @@ const Chat = () => {
 
     return () => clearTimeout(timer);
   }, [chat?.messages]);
- // Funkcje Obsługi
+
   const handleEmoji = (e) => {
-    setText((prev) => prev + e.emoji);// Dodanie emotikony do tekstu
-    setOpen(false);// Zamknięcie pickera
+    setText((prev) => prev + e.emoji);
+    setOpen(false);
   };
 
   const handleImg = (e) => {
     if (e.target.files[0]) {
       setImg({
         file: e.target.files[0],
-        url: URL.createObjectURL(e.target.files[0]),// Ustawienie stanu img
+        url: URL.createObjectURL(e.target.files[0]),
       });
     }
   };
@@ -66,22 +66,20 @@ const Chat = () => {
         const timestamp = Date.now();
         const imgRef = ref(storage, `images/${timestamp}_${img.file.name}`);
         await uploadBytes(imgRef, img.file);
-        imgUrl = await getDownloadURL(imgRef);// Przesyłanie obrazu do Firebase
+        imgUrl = await getDownloadURL(imgRef);
       }
 
       const newMessage = {
         senderId: currentUser.id,
         text: text || "",
         img: imgUrl || null,
-        createdAt: Timestamp.now(),// Tworzenie nowej wiadomości
+        createdAt: Timestamp.now(),
       };
 
       await updateDoc(doc(db, "chats", chatId), {
-        messages: arrayUnion(newMessage),// Aktualizacja dokumentu czatu
-
+        messages: arrayUnion(newMessage),
       });
 
-      // Update userchats
       const userIDs = [currentUser.id, user.id];
       for (const id of userIDs) {
         const userChatsRef = doc(db, "userchats", id);
@@ -130,7 +128,7 @@ const Chat = () => {
       <div className="center">
         {chat?.messages?.map((message, index) => (
           <div className={`message ${message.senderId === currentUser.id ? 'own' : ''}`} key={index}>
-            {message.img && <img src={message.img} alt="Sent" />}
+            {message.img && <img src={message.img} alt="Sent" className="message-img" />}
             <div className="texts">
               <p>{message.text}</p>
             </div>
@@ -138,9 +136,7 @@ const Chat = () => {
         ))}
         {img.url && (
           <div className="message own">
-            <div className="texts">
-              <img src={img.url} alt="Preview" />
-            </div>
+            <img src={img.url} alt="Preview" className="message-img" />
           </div>
         )}
         <div ref={endRef}></div>
@@ -172,13 +168,16 @@ const Chat = () => {
             </div>
           )}
         </div>
-        <button className="sendbutton" onClick={handleSend}>Wyślji</button>
+        <button className="sendbutton" onClick={handleSend}>Wyślij</button>
       </div>
     </div>
   );
 };
 
 export default Chat
+
+
+
 
 
 

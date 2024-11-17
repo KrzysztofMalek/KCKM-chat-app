@@ -62,46 +62,45 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
-  
+  .message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 70%;
 }
 
 .message {
-  max-width: 70%;
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 70%;
+  margin-bottom: 10px; /* Dodatkowy margines na oddzielenie wiadomości */
 }
 
 .message.own {
   align-self: flex-end;
-}
-
-.message.own .texts p {
-  background-color: #5183fe;
-  color: white;
+  align-items: flex-end;
 }
 
 .message img {
-  max-width: 400px; /* zmień this na 100% lub inną wartość */
-  max-height: 600px; /* zmień to w zależności od potrzeb */
-  object-fit: cover; 
-  border-radius: 10px; 
-  margin-top: 5px;
-
+  max-width: 100%; /* Obrazek nie będzie większy niż kontener wiadomości */
+  width: auto;
+  height: auto;
+  border-radius: 10px;
 }
 
-.message .texts img {
-  max-width: 100%; 
-  height: auto; 
-  display: block; 
-  object-fit: cover; 
+.message-img {
+  max-width: 100%;
+  height: auto;
   border-radius: 10px;
-  
 }
 
 .message .texts {
-  max-width: 500px; /* Zabezpieczenie przed rozciąganiem */
-  word-wrap: break-word; /* Przenoszenie długich tekstów */
-  overflow: hidden; /* Zabezpieczenie */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .message .texts p {
@@ -110,10 +109,18 @@
   border-radius: 10px;
 }
 
+.message.own .texts p {
+  background-color: #5183fe;
+  color: white;
+}
+
 .message span {
   font-size: 12px;
   color: #a5a5a5;
 }
+}
+
+
 
 .center::-webkit-scrollbar {
   width: 6px;
